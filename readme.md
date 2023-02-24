@@ -1,7 +1,5 @@
 Compute.cpp
 
-    Result:
-
 | function  | timing & latency in -O3                                             | timing & latency in -O0                                              |
 | --------- | ------------------------------------------------------------------- | -------------------------------------------------------------------- |
 | multi-add | 1.269017 seconds<br />4.188539 cycles/eval<br />1.575412 Gflop/s    | 8.043716 seconds<br />26.617035 cycles/eval<br />0.247673 Gflop/s    |
