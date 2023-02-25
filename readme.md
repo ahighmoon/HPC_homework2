@@ -14,3 +14,13 @@ compute.cpp
 ---
 
 compute-vec.cpp
+
+| col1 | col2 | col3 |
+| ---- | ---- | ---- |
+|      |      |      |
+|      |      |      |
+
+
+---
+
+compute-vec-pipe.cpp
