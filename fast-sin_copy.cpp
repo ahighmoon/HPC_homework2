@@ -142,7 +142,7 @@ int main() {
     }
   }
   printf("Taylor time:    %6.4f      Error: %e\n", tt.toc(), err(sinx_ref, sinx_taylor, N));
-
+/*
   tt.tic();
   for (long rep = 0; rep < 1000; rep++) {
     for (long i = 0; i < N; i+=4) {
@@ -150,7 +150,7 @@ int main() {
     }
   }
   printf("Intrin time:    %6.4f      Error: %e\n", tt.toc(), err(sinx_ref, sinx_intrin, N));
-
+*/
   tt.tic();
   for (long rep = 0; rep < 1000; rep++) {
     for (long i = 0; i < N; i+=4) {
