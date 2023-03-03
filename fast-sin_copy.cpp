@@ -1,4 +1,4 @@
-#define _USE_MATH_DEFINES
+//#define _USE_MATH_DEFINES
 #include <math.h>
 #include <stdio.h>
 #include "utils.h"
@@ -51,19 +51,26 @@ void sin4_taylor(double* sinx, const double* x) {
   }
 }
 
-/*
+
 void sin4_intrin(double* sinx, const double* x) {
   // The definition of intrinsic functions can be found at:
   // https://software.intel.com/sites/landingpage/IntrinsicsGuide/#
 #if defined(__AVX__)
-  std::cout << "Using AVX" << std::endl;
-  __m256d x1, x2, x3;
+  __m256d x1, x2, x3, x5, x7, x9, x11;
   x1  = _mm256_load_pd(x);
   x2  = _mm256_mul_pd(x1, x1);
   x3  = _mm256_mul_pd(x1, x2);
+  x5  = _mm256_mul_pd(x3, x2);
+  x7  = _mm256_mul_pd(x5, x2);
+  x9  = _mm256_mul_pd(x7, x2);
+  x11  = _mm256_mul_pd(x9, x2);
 
   __m256d s = x1;
   s = _mm256_add_pd(s, _mm256_mul_pd(x3 , _mm256_set1_pd(c3 )));
+  s = _mm256_add_pd(s, _mm256_mul_pd(x5 , _mm256_set1_pd(c5 )));
+  s = _mm256_add_pd(s, _mm256_mul_pd(x7 , _mm256_set1_pd(c7 )));
+  s = _mm256_add_pd(s, _mm256_mul_pd(x9 , _mm256_set1_pd(c9 )));
+  s = _mm256_add_pd(s, _mm256_mul_pd(x11 , _mm256_set1_pd(c11 )));
   _mm256_store_pd(sinx, s);
 #elif defined(__SSE2__)
   constexpr int sse_length = 2;
@@ -82,7 +89,7 @@ void sin4_intrin(double* sinx, const double* x) {
 #endif
 }
 
-*/
+
 void sin4_vector(double* sinx, const double* x) {
   // The Vec class is defined in the file intrin-wrapper.h
   typedef Vec<double,4> Vec4;
@@ -142,7 +149,7 @@ int main() {
     }
   }
   printf("Taylor time:    %6.4f      Error: %e\n", tt.toc(), err(sinx_ref, sinx_taylor, N));
-/*
+
   tt.tic();
   for (long rep = 0; rep < 1000; rep++) {
     for (long i = 0; i < N; i+=4) {
@@ -150,7 +157,7 @@ int main() {
     }
   }
   printf("Intrin time:    %6.4f      Error: %e\n", tt.toc(), err(sinx_ref, sinx_intrin, N));
-*/
+
   tt.tic();
   for (long rep = 0; rep < 1000; rep++) {
     for (long i = 0; i < N; i+=4) {
