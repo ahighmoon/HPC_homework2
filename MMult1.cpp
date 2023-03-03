@@ -26,6 +26,38 @@ void MMult0(long m, long n, long k, double *a, double *b, double *c) {
 
 void MMult1(long m, long n, long k, double *a, double *b, double *c) {
   // TODO: See instructions below
+    for (long ii = 0; ii < m; ii += BLOCK_SIZE)
+    {
+        for (long kk = 0; kk < k; kk += BLOCK_SIZE)
+        {
+            for (long j=0; j < n; j += 2)
+            {
+                for (long i = ii; i < ii + BLOCK_SIZE; i += 2)
+                {
+                    if (kk == 0)
+                        acc00 = acc01 = acc10 = acc11 = 0;
+                    else
+                    {
+                        acc00 = C[i + 0][j + 0];
+                        acc01 = C[i + 0][j + 1];
+                        acc10 = C[i + 1][j + 0];
+                        acc11 = C[i + 1][j + 1];
+                    }
+                    for (int kkk = kk; kkk < kk + BLOCK_SIZE; kkk++)
+                    {
+                        acc00 += B[kkk][j + 0] * A[i + 0][kkk];
+                        acc01 += B[kkk][j + 1] * A[i + 0][kkk];
+                        acc10 += B[kkk][j + 0] * A[i + 1][kkk];
+                        acc11 += B[kkk][j + 1] * A[i + 1][kkk];
+                    }
+                    C[i + 0][j + 0] = acc00;
+                    C[i + 0][j + 1] = acc01;
+                    C[i + 1][j + 0] = acc10;
+                    C[i + 1][j + 1] = acc11;
+                }
+            }
+        }
+    }
 }
 
 int main(int argc, char** argv) {
