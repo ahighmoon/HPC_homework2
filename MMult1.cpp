@@ -34,26 +34,34 @@ void MMult1(long m, long n, long k, double *a, double *b, double *c) {
             {
                 for (long i = ii; i < ii + BLOCK_SIZE; i += 2)
                 {
-                    if (kk == 0)
-                        acc00 = acc01 = acc10 = acc11 = 0;
+                    double acc00;
+                    double acc01;
+                    double acc10;
+                    double acc11;
+                    if (kk == 0){
+                        acc00 = 0;
+                        acc01 = 0;
+                        acc10 = 0;
+                        acc11 = 0;
+                    }
                     else
                     {
-                        acc00 = C[i + 0][j + 0];
-                        acc01 = C[i + 0][j + 1];
-                        acc10 = C[i + 1][j + 0];
-                        acc11 = C[i + 1][j + 1];
+                        acc00 = c[i + 0][j + 0];
+                        acc01 = c[i + 0][j + 1];
+                        acc10 = c[i + 1][j + 0];
+                        acc11 = c[i + 1][j + 1];
                     }
-                    for (int kkk = kk; kkk < kk + BLOCK_SIZE; kkk++)
+                    for (long kkk = kk; kkk < kk + BLOCK_SIZE; kkk++)
                     {
-                        acc00 += B[kkk][j + 0] * A[i + 0][kkk];
-                        acc01 += B[kkk][j + 1] * A[i + 0][kkk];
-                        acc10 += B[kkk][j + 0] * A[i + 1][kkk];
-                        acc11 += B[kkk][j + 1] * A[i + 1][kkk];
+                        acc00 += b[kkk][j + 0] * a[i + 0][kkk];
+                        acc01 += b[kkk][j + 1] * a[i + 0][kkk];
+                        acc10 += b[kkk][j + 0] * a[i + 1][kkk];
+                        acc11 += b[kkk][j + 1] * a[i + 1][kkk];
                     }
-                    C[i + 0][j + 0] = acc00;
-                    C[i + 0][j + 1] = acc01;
-                    C[i + 1][j + 0] = acc10;
-                    C[i + 1][j + 1] = acc11;
+                    c[i + 0][j + 0] = acc00;
+                    c[i + 0][j + 1] = acc01;
+                    c[i + 1][j + 0] = acc10;
+                    c[i + 1][j + 1] = acc11;
                 }
             }
         }
