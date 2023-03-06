@@ -104,7 +104,7 @@ void MMult1(long m, long n, long k, double *a, double *b, double *c) {
         MMult0(BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, A, B, C);
       }
 
-      //C back to c
+      //back to c
       for (int ic = 0; ic < BLOCK_SIZE; ic++) {
         for (int jc = 0; jc < BLOCK_SIZE; jc++) {
           c[m*(j*BLOCK_SIZE + jc) + i*BLOCK_SIZE + ic] = C[jc*BLOCK_SIZE + ic];
