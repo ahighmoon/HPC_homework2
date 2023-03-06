@@ -75,3 +75,80 @@ compute-vec.cpp
 ---
 
 compute-vec-pipe.cpp
+
+
+M = 1:
+
+
+time = 1.238109
+flop-rate = 2.992088 Gflop/s
+
+time = 1.229141
+flop-rate = 3.013968 Gflop/s
+
+time = 1.211443
+flop-rate = 3.058208 Gflop/s
+
+
+M = 2: 
+
+
+time = 1.292003
+flop-rate = 2.410646 Gflop/s
+
+time = 1.320351
+flop-rate = 2.359010 Gflop/s
+
+time = 1.324384
+flop-rate = 2.351743 Gflop/s
+
+
+M = 3:
+
+
+time = 1.429195
+flop-rate = 1.766589 Gflop/s
+
+time = 1.632165
+flop-rate = 1.546986 Gflop/s
+
+time = 1.410861
+flop-rate = 1.789586 Gflop/s
+
+
+M = 4:
+
+
+time = 1.291951
+flop-rate = 1.497712 Gflop/s
+
+time = 1.340657
+flop-rate = 1.443241 Gflop/s
+
+time = 1.301906
+flop-rate = 1.486120 Gflop/s
+
+
+M = 5:
+
+
+time = 1.352020
+flop-rate = 0.994889 Gflop/s
+
+time = 1.332747
+flop-rate = 1.009200 Gflop/s
+
+time = 1.490212
+flop-rate = 0.902640 Gflop/s
+
+M = 6:
+
+
+time = 1.429470
+flop-rate = 0.528297 Gflop/s
+
+time = 1.382441
+flop-rate = 0.546300 Gflop/s
+
+time = 1.399024
+flop-rate = 0.539829 Gflop/s
