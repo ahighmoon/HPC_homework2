@@ -67,10 +67,18 @@ compute.cpp
 
 compute-vec.cpp
 
-| col1 | col2 | col3 |
-| ---- | ---- | ---- |
-|      |      |      |
-|      |      |      |
+Then the VEC_LEN is 4, the normal execution yields:
+
+time = 1.322662
+flop-rate = 2.354612 Gflop/s
+
+The vecorized code yields:
+
+time = 1.280265
+
+flop-rate = 2.893360 Gflop/s
+
+There's no much difference in my execution so I don't know what/how to explain. My compile command is g++ -std=c++11 -O3 -march=native compute-vec.cpp -ftree-vectorize -fopt-info-vec-optimized. I am compiling the code using gcc 12.2.0 on a Windows machine with Inter i5-10210U chip.
 
 ---
 
