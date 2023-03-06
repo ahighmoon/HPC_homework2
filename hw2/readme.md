@@ -152,3 +152,6 @@ flop-rate = 0.546300 Gflop/s
 
 time = 1.399024
 flop-rate = 0.539829 Gflop/s
+
+
+Summary: The running time wasn't obviously impacted, but the flop-rate is getting lower when M is increased.
