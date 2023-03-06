@@ -66,56 +66,60 @@ void MMult1(long m, long n, long k, double *a, double *b, double *c) {
   */
 
   {
-  double* A = (double*) aligned_malloc(BLOCK_SIZE * BLOCK_SIZE * sizeof(double));
-  double* B = (double*) aligned_malloc(BLOCK_SIZE * BLOCK_SIZE * sizeof(double));
-  double* C = (double*) aligned_malloc(BLOCK_SIZE * BLOCK_SIZE * sizeof(double));
-  
-  for (long i = 0; i < BLOCK_SIZE*BLOCK_SIZE; i++) {
-    A[i] = 0.0;
-    B[i] = 0.0;
-    C[i] = 0.0;
-  }
-  long M = m / BLOCK_SIZE;
-  long N = n / BLOCK_SIZE;
-  long K = k / BLOCK_SIZE;
+    double* A = (double*) aligned_malloc(BLOCK_SIZE * BLOCK_SIZE * sizeof(double));
+    double* B = (double*) aligned_malloc(BLOCK_SIZE * BLOCK_SIZE * sizeof(double));
+    double* C = (double*) aligned_malloc(BLOCK_SIZE * BLOCK_SIZE * sizeof(double));
+    
+    for (long i = 0; i < BLOCK_SIZE*BLOCK_SIZE; i++) {
+      A[i] = 0.0;
+      B[i] = 0.0;
+      C[i] = 0.0;
+    }
 
-  for (long BLOCK = 0; BLOCK < M*N; BLOCK++) {
-    int i = BLOCK % M;
-    int j = BLOCK / M;
+    long M = m / BLOCK_SIZE;
+    long N = n / BLOCK_SIZE;
+    long K = k / BLOCK_SIZE;
+
+    for (long BLOCK = 0; BLOCK < M*N; BLOCK++) {
+      int i = BLOCK % M;
+      int j = BLOCK / M;
+      int iB = i*BLOCK_SIZE;
+      int jB = j*BLOCK_SIZE;
 
       for (int ic = 0; ic < BLOCK_SIZE; ic++) {
         for (int jc = 0; jc < BLOCK_SIZE; jc++) {
-          C[jc*BLOCK_SIZE + ic] = c[m*(j*BLOCK_SIZE+jc) + i*BLOCK_SIZE + ic];
+          C[jc*BLOCK_SIZE + ic] = c[m*(jB+jc) + iB + ic];
         }
       }
 
       //read matrix A, B
       for (long p = 0; p < K; p++) {
+        int pB = p*BLOCK_SIZE;
         for (int ia = 0; ia < BLOCK_SIZE; ia++) {
           for (int ja = 0; ja < BLOCK_SIZE; ja++) {
-            A[ja*BLOCK_SIZE + ia] = a[m*(p*BLOCK_SIZE+ja) + i*BLOCK_SIZE + ia];
+            A[ja*BLOCK_SIZE + ia] = a[m*(pB+ja) + iB + ia];
           }
         }
         for (int ib = 0; ib < BLOCK_SIZE; ib++) {
           for (int jb = 0; jb < BLOCK_SIZE; jb++) {
-            B[jb*BLOCK_SIZE + ib] = b[k*(j*BLOCK_SIZE+jb) + p*BLOCK_SIZE + ib];
+            B[jb*BLOCK_SIZE + ib] = b[k*(jB+jb) + pB + ib];
           }
         }
         MMult0(BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, A, B, C);
       }
 
-      //back to c
+      //restore the value in capital C back to little c
       for (int ic = 0; ic < BLOCK_SIZE; ic++) {
         for (int jc = 0; jc < BLOCK_SIZE; jc++) {
-          c[m*(j*BLOCK_SIZE + jc) + i*BLOCK_SIZE + ic] = C[jc*BLOCK_SIZE + ic];
+          c[m*(jB + jc) + iB + ic] = C[jc*BLOCK_SIZE + ic];
         }
       }
     }
 
-  aligned_free(A);
-  aligned_free(B);
-  aligned_free(C);
-}
+    aligned_free(A);
+    aligned_free(B);
+    aligned_free(C);
+  }
 }
 
 int main(int argc, char** argv) {
