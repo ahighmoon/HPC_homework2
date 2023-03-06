@@ -1,3 +1,4 @@
+//#define _USE_MATH_DEFINES
 #include <math.h>
 #include <stdio.h>
 #include "utils.h"
@@ -23,9 +24,12 @@ static constexpr double c9  =  1/(((double)2)*3*4*5*6*7*8*9);
 static constexpr double c11 = -1/(((double)2)*3*4*5*6*7*8*9*10*11);
 // sin(x) = x + c3*x^3 + c5*x^5 + c7*x^7 + x9*x^9 + c11*x^11
 
+//static unsigned int seed = 10;
+
 void sin4_reference(double* sinx, const double* x) {
   for (long i = 0; i < 4; i++) sinx[i] = sin(x[i]);
 }
+
 
 void sin4_taylor(double* sinx, const double* x) {
   for (int i = 0; i < 4; i++) {
@@ -47,17 +51,26 @@ void sin4_taylor(double* sinx, const double* x) {
   }
 }
 
+
 void sin4_intrin(double* sinx, const double* x) {
   // The definition of intrinsic functions can be found at:
   // https://software.intel.com/sites/landingpage/IntrinsicsGuide/#
 #if defined(__AVX__)
-  __m256d x1, x2, x3;
+  __m256d x1, x2, x3, x5, x7, x9, x11;
   x1  = _mm256_load_pd(x);
   x2  = _mm256_mul_pd(x1, x1);
   x3  = _mm256_mul_pd(x1, x2);
+  x5  = _mm256_mul_pd(x3, x2);
+  x7  = _mm256_mul_pd(x5, x2);
+  x9  = _mm256_mul_pd(x7, x2);
+  x11  = _mm256_mul_pd(x9, x2);
 
   __m256d s = x1;
   s = _mm256_add_pd(s, _mm256_mul_pd(x3 , _mm256_set1_pd(c3 )));
+  s = _mm256_add_pd(s, _mm256_mul_pd(x5 , _mm256_set1_pd(c5 )));
+  s = _mm256_add_pd(s, _mm256_mul_pd(x7 , _mm256_set1_pd(c7 )));
+  s = _mm256_add_pd(s, _mm256_mul_pd(x9 , _mm256_set1_pd(c9 )));
+  s = _mm256_add_pd(s, _mm256_mul_pd(x11 , _mm256_set1_pd(c11 )));
   _mm256_store_pd(sinx, s);
 #elif defined(__SSE2__)
   constexpr int sse_length = 2;
@@ -76,18 +89,28 @@ void sin4_intrin(double* sinx, const double* x) {
 #endif
 }
 
+
 void sin4_vector(double* sinx, const double* x) {
   // The Vec class is defined in the file intrin-wrapper.h
   typedef Vec<double,4> Vec4;
-  Vec4 x1, x2, x3;
+  Vec4 x1, x2, x3, x5, x7, x9, x11;
   x1  = Vec4::LoadAligned(x);
   x2  = x1 * x1;
   x3  = x1 * x2;
+  x5  = x3 * x2;
+  x7  = x5 * x2;
+  x9  = x7 * x2;
+  x11 = x9 * x2;
 
   Vec4 s = x1;
   s += x3  * c3 ;
+  s += x5  * c5 ;
+  s += x7  * c7 ;
+  s += x9  * c9 ;
+  s += x11 * c11;
   s.StoreAligned(sinx);
 }
+
 
 double err(double* x, double* y, long N) {
   double error = 0;
@@ -104,7 +127,7 @@ int main() {
   double* sinx_intrin = (double*) aligned_malloc(N*sizeof(double));
   double* sinx_vector = (double*) aligned_malloc(N*sizeof(double));
   for (long i = 0; i < N; i++) {
-    x[i] = (drand48()-0.5) * M_PI/2; // [-pi/4,pi/4]
+    x[i] = ( (rand() / (RAND_MAX + 1.0)) - 0.5) * M_PI/2; // [-pi/4,pi/4]
     sinx_ref[i] = 0;
     sinx_taylor[i] = 0;
     sinx_intrin[i] = 0;
@@ -118,7 +141,7 @@ int main() {
     }
   }
   printf("Reference time: %6.4f\n", tt.toc());
-
+  
   tt.tic();
   for (long rep = 0; rep < 1000; rep++) {
     for (long i = 0; i < N; i+=4) {
