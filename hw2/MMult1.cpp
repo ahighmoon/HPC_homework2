@@ -64,7 +64,6 @@ void MMult1(long m, long n, long k, double *a, double *b, double *c) {
       }
   }
   */
-
   {
     double* A = (double*) aligned_malloc(BLOCK_SIZE * BLOCK_SIZE * sizeof(double));
     double* B = (double*) aligned_malloc(BLOCK_SIZE * BLOCK_SIZE * sizeof(double));
@@ -142,11 +141,15 @@ int main(int argc, char** argv) {
     for (long i = 0; i < m*n; i++) c_ref[i] = 0;
     for (long i = 0; i < m*n; i++) c[i] = 0;
 
+    Timer t;
+    t.tic();
     for (long rep = 0; rep < NREPEATS; rep++) { // Compute reference solution
       MMult0(m, n, k, a, b, c_ref);
     }
+    double timet = t.toc();
+    printf("%10f", timet);
 
-    Timer t;
+    //Timer t;
     t.tic();
     for (long rep = 0; rep < NREPEATS; rep++) {
       MMult1(m, n, k, a, b, c);
